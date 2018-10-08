@@ -1,0 +1,13 @@
+#!/bin/sh
+APP_NAME='exper'
+INS_PATH=$(cd "$(dirname $0)/.." && pwd)
+APP_PATH="${INS_PATH}/app/${APP_NAME}"
+NGINX_PATH="${INS_PATH}/nginx"
+VANILLA_BIN="${INS_PATH}/bin/vanilla_bin/vanilla"
+LUA_JIT_BIN="${INS_PATH}/luajit/bin/luajit-2.1.0-alpha"
+
+LUA_PACKAGE_PATH="${APP_PATH}/application/?.lua;${APP_PATH}/application/library/?.lua;${APP_PATH}/application/?/init.lua;${INS_PATH}/?.lua;${APP_PATH}/?/init.lua;${APP_PATH}/?.lua"
+LUA_PACKAGE_CPATH="${APP_PATH}/library/?.so;${INS_PATH}/lua/lualib/?.so"
+
+exec "$LUA_JIT_BIN" -e "VANILLA_PATH=\"${INS_PATH}\"; VANILLA_APP_PATH=\"${APP_PATH}\"; VANILLA_NGX_PATH=\"${NGINX_PATH}\"; VANILLA_JIT_BIN=\"${LUA_JIT_BIN}\"; package.path=\"${LUA_PACKAGE_PATH}\"; package.cpath=\"${LUA_PACKAGE_CPATH}\"" "${VANILLA_BIN}" "$@"
+
